@@ -10,62 +10,53 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'TA37Calculadora';
-}
-const display: HTMLElement | null = document.querySelector("#display");
-const buttons: NodeListOf<HTMLButtonElement> = document.querySelectorAll("button");
-const calculator: HTMLElement | null = document.querySelector(".calculator");
+  display = "";
 
-const btnNumbers: NodeListOf<HTMLButtonElement> = document.querySelectorAll(".btn-number");
-
-const btnOperators: NodeListOf<HTMLButtonElement> = document.querySelectorAll(".btn-operator");
-
-const btnClear: HTMLElement | null = document.querySelector(".clear");
-
-const btnEqual: HTMLElement | null = document.querySelector(".btn-equal");
-
-buttons.forEach((item: HTMLButtonElement) => {
-  item.addEventListener("click",() => {
-
-    if (item.id == "clear") {
-      display.innerText = "";
-    } else if (item.id == "backspace") {
-      let string: string = display.innerText.toString();
-      display.innerText = string.substr(0, string.length - 1);
-    } else if (display.innerText != "" && item.id == "equal") {
-      display.innerText = eval(display.innerText);
-    } else if (display.innerText == "" && item.id == "equal") {
-      display.innerText = "Null";   
-      setTimeout(() => (display.innerText = ""), 2000);
-    } else {
-      display.innerText += item.id;
+onButtonClick(item: string): void {
+  if (item === "clear") {
+    this.display = "";
+  } else if (item === "backspace") {
+    let string = this.display.toString();
+    this.display = string.slice(0, string.length - 1);
+  } else if (this.display !== "" && item === "equal") {
+    try {
+      const result = new Function('return ' + this.display)();
+      this.display = result.toString();
+    } catch (error) {
+      this.display = 'Error';
     }
+  } else if (this.display === "" && item === "equal") {
+    this.display = "Null";
+    setTimeout(() => (this.display = ""), 2000);
+  } else {
+    this.display += item;
+  }
 
-    let texto: string = display.textContent;
+  let texto = this.display;
 
-    texto = texto
-      .replaceAll("//", "/")
-      .replaceAll("++", "+")
-      .replaceAll("--", "-")
-      .replaceAll("**", "*")
-      .replaceAll("..", ".") 
-      .replaceAll("+-", "-")
-      .replaceAll("+*", "*")
-      .replaceAll("+/", "/")
-      .replaceAll("-+", "+")
-      .replaceAll("-*", "*")
-      .replaceAll("-/", "/")
-      .replaceAll("*+", "+")
-      .replaceAll("*-", "-")
-      .replaceAll("*/", "/")
-      .replaceAll("/+", "+")
-      .replaceAll("/-", "-")
-      .replaceAll("/*", "*")
-      .replaceAll(".+", "+")
-      .replaceAll(".-", "-")
-      .replaceAll(".*", "*")
-      .replaceAll("./", "/");
+  texto = texto
+    .replaceAll("//", "/")
+    .replaceAll("++", "+")
+    .replaceAll("--", "-")
+    .replaceAll("**", "*")
+    .replaceAll("..", ".")
+    .replaceAll("+-", "-")
+    .replaceAll("+*", "*")
+    .replaceAll("+/", "/")
+    .replaceAll("-+", "+")
+    .replaceAll("-*", "*")
+    .replaceAll("-/", "/")
+    .replaceAll("*+", "+")
+    .replaceAll("*-", "-")
+    .replaceAll("*/", "/")
+    .replaceAll("/+", "+")
+    .replaceAll("/-", "-")
+    .replaceAll("/*", "*")
+    .replaceAll(".+", "+")
+    .replaceAll(".-", "-")
+    .replaceAll(".*", "*")
+    .replaceAll("./", "/");
 
-    display.textContent = texto;
-  });
-});
+  this.display = texto;
+}
+}
